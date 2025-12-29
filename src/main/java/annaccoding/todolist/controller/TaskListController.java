@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.GetMapping;
+
+import annaccoding.todolist.dto.CreateListRequest;
 import annaccoding.todolist.model.TaskList;
 import annaccoding.todolist.tasklistservice.TaskListService;
 import java.util.Optional;
@@ -22,21 +24,20 @@ public class TaskListController {
     }
 
     @PostMapping("/createlist")
-    public TaskList createList(@RequestBody String title) {
+    public TaskList createList(@RequestBody CreateListRequest requestList) {
 
-        return taskListService.createTaskList(title);
+        return taskListService.createTaskList(requestList.title());
     }
 
-    @PutMapping("/update/{id}")
-    public TaskList updateListName(@PathVariable Integer id, @RequestBody String title) {
+    @PutMapping("/updatelist/{id}")
+    public TaskList updateListName(@PathVariable Integer id, @RequestBody CreateListRequest requestList) {
         
-        return taskListService.updateListName(id, title);
+        return taskListService.updateListName(id, requestList.title());
     }
 
-    @GetMapping("/findbyid/{id}")
+    @GetMapping("/findlistbyid/{id}")
     public Optional<TaskList> findById(@PathVariable Integer id) {
         return taskListService.findById(id);
     }
-    
     
 }
