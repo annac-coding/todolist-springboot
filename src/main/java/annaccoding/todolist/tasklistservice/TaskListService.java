@@ -1,8 +1,7 @@
 package annaccoding.todolist.tasklistservice;
 
-import java.util.Optional;
-
 import org.springframework.stereotype.Service;
+import annaccoding.todolist.exception.ResourceNotFoundException;
 import annaccoding.todolist.model.TaskList;
 import annaccoding.todolist.repository.TaskListRepository;
 
@@ -22,20 +21,19 @@ public class TaskListService {
     }
 
     public TaskList updateListName(Integer id, String title) {
-        
-        TaskList taskList = taskListRepository.findById(id)
-    .orElseThrow(() -> new RuntimeException("Task List não encontrada"));
-
+        TaskList taskList = findByIdOrThrow(id);
         taskList.setTitle(title);
         return taskListRepository.save(taskList);
     }
 
-    public Optional<TaskList> findById(Integer id) {
-        
-        TaskList taskList = taskListRepository.findById(id)
-        .orElseThrow(() -> new RuntimeException("Task List não encontrada"));
+    public TaskList findByIdOrThrow(Integer id) {
+        return taskListRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("TaskList não encontrada"));
+    }
 
-        return Optional.of(taskList);
+    public void deleteListById(Integer id) {
+        TaskList list = findByIdOrThrow(id);
+        taskListRepository.delete(list);
     }
 
 

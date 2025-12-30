@@ -1,17 +1,16 @@
 package annaccoding.todolist.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.GetMapping;
-
+import annaccoding.todolist.api.ApiResponse;
 import annaccoding.todolist.dto.CreateListRequest;
 import annaccoding.todolist.model.TaskList;
 import annaccoding.todolist.tasklistservice.TaskListService;
-import java.util.Optional;
+import jakarta.validation.Valid;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequestMapping("/todolist")
@@ -24,20 +23,55 @@ public class TaskListController {
     }
 
     @PostMapping("/createlist")
-    public TaskList createList(@RequestBody CreateListRequest requestList) {
+    public ResponseEntity<ApiResponse<TaskList>> createList(@Valid @RequestBody CreateListRequest requestList) {
 
-        return taskListService.createTaskList(requestList.title());
+        TaskList created = taskListService.createTaskList(requestList.title());
+
+        ApiResponse<TaskList> body = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.CREATED.value(),
+                "Lista criada com sucesso",
+                created
+        );
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(body);
     }
 
     @PutMapping("/updatelist/{id}")
-    public TaskList updateListName(@PathVariable Integer id, @RequestBody CreateListRequest requestList) {
-        
-        return taskListService.updateListName(id, requestList.title());
+    public ResponseEntity<ApiResponse<TaskList>> updateListName(
+            @PathVariable Integer id,
+            @Valid @RequestBody CreateListRequest requestList
+    ) {
+        TaskList updated = taskListService.updateListName(id, requestList.title());
+
+        ApiResponse<TaskList> body = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                "Lista atualizada com sucesso",
+                updated
+        );
+
+        return ResponseEntity.ok(body);
     }
 
     @GetMapping("/findlistbyid/{id}")
-    public Optional<TaskList> findById(@PathVariable Integer id) {
-        return taskListService.findById(id);
+    public ResponseEntity<ApiResponse<TaskList>> findById(@PathVariable Integer id) {
+
+        TaskList list = taskListService.findByIdOrThrow(id);
+
+        ApiResponse<TaskList> body = new ApiResponse<>(
+                LocalDateTime.now(),
+                HttpStatus.OK.value(),
+                "Lista encontrada com sucesso",
+                list
+        );
+
+        return ResponseEntity.ok(body);
     }
-    
+
+    @DeleteMapping("/deletelist/{id}")
+    public ResponseEntity<Void> deleteListByID(@PathVariable Integer id) {
+        taskListService.deleteListById(id);
+        return ResponseEntity.noContent().build(); // 204 sem body
+    }
 }
