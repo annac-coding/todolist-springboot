@@ -36,7 +36,7 @@ public class TaskList {
         name = "annotation_tasklists",
         length = 300
     )
-    private String annotations;
+    private String annotation;
 
     @OneToMany(mappedBy = "taskList")
     private List<Task> tasks;
