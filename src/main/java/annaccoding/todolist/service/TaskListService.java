@@ -1,6 +1,7 @@
 package annaccoding.todolist.service;
 
 import static annaccoding.todolist.util.TextNormalizer.normalize;
+import org.springframework.data.rest.webmvc.ResourceNotFoundException;
 import org.springframework.stereotype.Service;
 import annaccoding.todolist.model.TaskList;
 import annaccoding.todolist.repository.TaskListRepository;
@@ -25,4 +26,15 @@ public class TaskListService {
         taskList.setDescription(normalize(description));
         return taskListRepository.save(taskList);
     }
+
+    public void deleteTaskList(Integer taskListId) {
+
+    TaskList taskList = taskListRepository.findById(taskListId)
+        .orElseThrow(() -> new ResourceNotFoundException(
+        "TaskList não encontrada."
+        ));
+
+    taskListRepository.delete(taskList);
+    }
+
 }

@@ -22,44 +22,33 @@ public class TaskService {
         this.taskListRepository = taskListRepository;
     }
 
-        public Task createTask(
-                Integer taskListId, 
-                String title,  
-                String annotation, 
-                String description
-    ) {
-            TaskList list = taskListRepository.findById(taskListId)
-                .orElseThrow(() -> new RuntimeException("TaskList não encontrada"));
-            
-            Task task = new Task();
-            task.setTitle(title);
-            task.setStatus(Status.PENDING);
-            task.setAnnotation(normalize(annotation));
-            task.setDescription(normalize(description));
-            task.setTaskList(list);
+    public Task createTask(
+            Integer taskListId, String title,  
+            String annotation, String description
+) {
+        TaskList list = taskListRepository.findById(taskListId)
+            .orElseThrow(() -> new RuntimeException("TaskList não encontrada"));
+        
+        Task task = new Task();
+        task.setTitle(title);
+        task.setStatus(Status.PENDING);
+        task.setAnnotation(normalize(annotation));
+        task.setDescription(normalize(description));
+        task.setTaskList(list);
 
-            return taskRepository.save(task);
-    }
-
-        public void deleteTask(
-                Integer taskListId, 
-                Integer taskId
-    ) {
-            Task task = taskRepository.findById(taskId)
-                .orElseThrow(() -> new RuntimeException("Task não encontrada"));
-            
-            if (!task.getTaskList().getId().equals(taskListId)) {
-                throw new ResourceNotFoundException("Task não pertence à TaskList informada");
-            }
-
-            taskRepository.delete(task);
-
-            /*para multiuser: if (!task.getTaskList().getId().equals(taskListId)
-    || !task.getTaskList().getUser().getId().equals(userId)) {
-    throw new ResourceNotFoundException(...);
+        return taskRepository.save(task);
 }
- */
-    }
+
+    public void deleteTask(
+        Integer taskListId, Integer taskId) {
+
+        Task task = taskRepository.findByIdAndTaskListId(taskId, taskListId)
+            .orElseThrow(() -> new ResourceNotFoundException(
+            "Task não encontrada para a TaskList informada"
+            ));
+
+        taskRepository.delete(task);
+}
 
 }
 

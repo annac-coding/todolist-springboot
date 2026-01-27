@@ -1,0 +1,55 @@
+###
+POST http://localhost:8080/todolist/addtasklist
+Content-Type: application/json
+
+{
+  "title": "O que estudar?",
+  "annotation": "",
+  "description": "Idiomas, programação e trading."
+}
+
+###
+POST http://localhost:8080/todolist/addtask/1
+Content-Type: application/json
+
+{
+  "title": "Trading",
+  "annotation": "Falta metade do assunto resistência",
+  "description": "Suporte e Resistência."
+}
+
+###
+POST http://localhost:8080/todolist/addtask/1
+Content-Type: application/json
+
+{
+  "title": "Inglês",
+  "annotation": "Já iniciado, mas é bom traduzir",
+  "description": "Unidade 1 do livro."
+}
+
+###
+POST http://localhost:8080/todolist/addtask/1
+Content-Type: application/json
+
+{
+  "title": "Inglês",
+  "annotation": "",
+  "description": "Unidade 2 do livro."
+}
+
+###
+POST http://localhost:8080/todolist/addtasklist
+Content-Type: application/json
+
+{
+  "title": "Compras!",
+  "annotation": "",
+  "description": "Festa de aniversário de Harrison e presentes."
+}
+
+###
+DELETE http://localhost:8080/todolist/tasklists/2
+
+###
+DELETE http://localhost:8080/todolist/tasklists/1/tasks/4
